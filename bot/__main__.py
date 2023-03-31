@@ -4,6 +4,8 @@ import asyncio
 from aiogram import Dispatcher, Bot
 from dotenv import load_dotenv, find_dotenv
 
+from bot.handlers import register_client_handlers
+
 
 async def main() -> None:
     logging.basicConfig(level=logging.DEBUG)
@@ -12,6 +14,8 @@ async def main() -> None:
 
     dp = Dispatcher()
     bot = Bot(token=os.getenv('token'))
+
+    register_client_handlers(dp)
 
     await dp.start_polling(bot)
 
