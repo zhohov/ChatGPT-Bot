@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import Column, Integer, TEXT, DATE, select
+from sqlalchemy import Column, Integer, TEXT, DATE, select, update
 from sqlalchemy.orm import sessionmaker
 
 from .base import BaseModel
@@ -47,3 +47,23 @@ async def create_user(user_id: int, username: str, session_maker: sessionmaker) 
                 username=username,
             )
             session.add(user)
+
+
+async def checking_the_number_of_requests(user_id: int, session_maker: sessionmaker) -> bool:
+    async with session_maker() as session:
+        async with session.begin():
+            requests = await session.execute(
+                select(User.requests)
+                .where(User.user_id == user_id)
+            )
+            return False if requests > 10 else True
+
+
+async def update_requests(user_id: int, session_maker: sessionmaker) -> None:
+    async with session_maker() as session:
+        async with session.begin():
+            await session.execute(
+                update(User)
+                .where(User.user_id == user_id)
+                .values(requests=User.requests + 1)
+            )
