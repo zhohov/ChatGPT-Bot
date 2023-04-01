@@ -56,7 +56,8 @@ async def checking_the_number_of_requests(user_id: int, session_maker: sessionma
                 select(User.requests)
                 .where(User.user_id == user_id)
             )
-            return False if requests > 10 else True
+            requests = requests.one_or_none()
+            return False if requests[0] > 10 else True
 
 
 async def update_requests(user_id: int, session_maker: sessionmaker) -> None:
@@ -67,3 +68,7 @@ async def update_requests(user_id: int, session_maker: sessionmaker) -> None:
                 .where(User.user_id == user_id)
                 .values(requests=User.requests + 1)
             )
+
+
+async def check_subscription(user_id: int, session_maker: sessionmaker):
+    pass

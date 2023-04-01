@@ -8,6 +8,7 @@ from sqlalchemy import URL
 from bot.database import create_async_engine, get_session_maker
 from bot.handlers import register_client_handlers
 from middlewares.registration_check import RegistrationCheck
+from middlewares.checking_availability_of_the_request import RequestsCheck
 
 
 async def main() -> None:
@@ -18,6 +19,7 @@ async def main() -> None:
     dp = Dispatcher()
     bot = Bot(token=os.getenv('token'))
     dp.message.middleware(RegistrationCheck())
+    dp.message.middleware(RequestsCheck())
 
     register_client_handlers(dp)
 
