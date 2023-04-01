@@ -10,4 +10,4 @@ async def start_command(message: types.Message) -> Message:
 
 
 def register_client_handlers(router: Router) -> None:
-    router.message.register(start_command, Command(commands=['start']))
+    router.message.register(start_command, Command(commands=['start']), flags={'registration_check': 'registration_check'})
