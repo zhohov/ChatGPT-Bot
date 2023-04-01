@@ -1,6 +1,7 @@
 import datetime
 
-from sqlalchemy import Column, Integer, TEXT, DATE
+from sqlalchemy import Column, Integer, TEXT, DATE, select
+from sqlalchemy.orm import sessionmaker
 
 from .base import BaseModel
 
@@ -24,3 +25,25 @@ class User(BaseModel):
 
     def __repr__(self):
         return self.__str__()
+
+
+async def check_unique_user(user_id: int, session_maker: sessionmaker) -> bool:
+    async with session_maker() as session:
+        async with session.begin():
+            result = await session.execute(
+                select(User)
+                .where(User.user_id == user_id)
+            )
+            user = result.one_or_none()
+
+            return False if user is not None else True
+
+
+async def create_user(user_id: int, username: str, session_maker: sessionmaker) -> None:
+    async with session_maker() as session:
+        async with session.begin():
+            user = User(
+                user_id=user_id,
+                username=username,
+            )
+            session.add(user)
