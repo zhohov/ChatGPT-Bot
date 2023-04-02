@@ -70,5 +70,40 @@ async def update_requests(user_id: int, session_maker: sessionmaker) -> None:
             )
 
 
-async def check_subscription(user_id: int, session_maker: sessionmaker):
-    pass
+async def add_subscription(user_id: int, session_maker: sessionmaker) -> None:
+    start_subscription_date = datetime.datetime.today().replace(microsecond=0)
+    timestamp_date = int(datetime.datetime.timestamp(start_subscription_date))
+    timestamp_date += 60 * 60 * 24 * 30
+
+    async with session_maker() as session:
+        async with session.begin():
+            await session.execute(
+                update(User)
+                .where(User.user_id == user_id)
+                .values(subscription_end_date=timestamp_date, subscription=1)
+            )
+
+
+async def check_subscription(user_id: int, session_maker: sessionmaker) -> bool:
+    async with session_maker() as session:
+        async with session.begin():
+            subscription = await session.execute(
+                select(User.subscription)
+                .where(User.user_id == user_id)
+            )
+            subscription = subscription.one_or_none()
+            return True if subscription[0] == 1 else False
+
+
+async def checking_subscription_availability(user_id: int, session_maker: sessionmaker) -> bool:
+    date = datetime.datetime.today().replace(microsecond=0)
+    timestamp_date = int(datetime.datetime.timestamp(date))
+
+    async with session_maker() as session:
+        async with session.begin():
+            subscription_end_date = await session.execute(
+                select(User.subscription_end_date)
+                .where(User.user_id == user_id)
+            )
+            subscription_end_date = subscription_end_date.one_or_none()
+            return True if subscription_end_date[0] > timestamp_date else False

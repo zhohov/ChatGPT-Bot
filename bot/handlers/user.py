@@ -4,6 +4,9 @@ from aiogram import types, Router, F
 from aiogram.enums import ContentType
 from aiogram.filters import Command
 from aiogram.types import Message
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+
+from bot.database import add_subscription
 
 router = Router()
 
@@ -16,10 +19,18 @@ async def request_command(message: types.Message) -> Message:
     return await message.answer('Request!')
 
 
-async def buy_command(message: types.Message) -> None:
-    await message.answer('Подписка на 1 месяц\n\nПлатная подписка позволит вам отправлять неограниченное число '
-                         'запросов в течение 1 месяца\n\nЦена: 499.00р / месяц')
-    await message.answer_invoice(
+async def buy_command(message: types.Message) -> Message:
+    builder = InlineKeyboardBuilder()
+    builder.add(types.InlineKeyboardButton(
+        text='Buy',
+        callback_data='buy')
+    )
+    return await message.answer('Подписка на 1 месяц\n\nПлатная подписка позволит вам отправлять неограниченное число '
+                         'запросов в течение 1 месяца\n\nЦена: 499.00р / месяц', reply_markup=builder.as_markup())
+
+
+async def buy_send_invoice(callback: types.CallbackQuery) -> None:
+    await callback.message.answer_invoice(
         title='Подписка на месяц',
         description='Платная подписка на ChatGPT бота даст вам возможность отправлять неограниченное число запросов в '
                     'течение 1 месяца',
@@ -38,9 +49,10 @@ async def pre_checkout(pre_checkout_query: types.PreCheckoutQuery):
     )
 
 
-async def successful_pay(message: types.Message) -> Message:
+async def successful_pay(message: types.Message, session_maker: sessionmaker) -> None:
     if message.successful_payment.invoice_payload == 'month_sub':
-        return await message.answer('Вы успешно приобрели подписку!')
+        await message.answer('Вы успешно приобрели подписку!')
+        await add_subscription(user_id=message.chat.id, session_maker=session_maker)
 
 
 def register_user_handlers(router: Router) -> None:

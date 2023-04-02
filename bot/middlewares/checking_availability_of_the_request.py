@@ -3,7 +3,8 @@ from aiogram import BaseMiddleware
 from aiogram.dispatcher.flags import get_flag
 from aiogram.types import Message
 
-from bot.database import checking_the_number_of_requests, update_requests, check_subscription
+from bot.database import checking_the_number_of_requests, update_requests, check_subscription, \
+    checking_subscription_availability
 
 
 class RequestsCheck(BaseMiddleware):
@@ -21,7 +22,10 @@ class RequestsCheck(BaseMiddleware):
             return await handler(event, data)
         else:
             if await check_subscription(user_id=event.from_user.id, session_maker=session_maker):
-                pass
+                if await checking_subscription_availability(user_id=event.from_user.id, session_maker=session_maker):
+                    return await handler(event, data)
+                else:
+                    pass
             elif await checking_the_number_of_requests(user_id=event.from_user.id, session_maker=session_maker):
                 await update_requests(user_id=event.from_user.id, session_maker=session_maker)
                 return await handler(event, data)
