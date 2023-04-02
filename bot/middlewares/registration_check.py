@@ -1,3 +1,4 @@
+import logging
 from typing import Callable, Dict, Any, Awaitable
 from aiogram import BaseMiddleware
 from aiogram.dispatcher.flags import get_flag
@@ -26,8 +27,8 @@ class RegistrationCheck(BaseMiddleware):
                     username=event.from_user.username,
                     session_maker=session_maker,
                 )
-                print('A new user has been registered')
+                logging.info('A new user has been registered')
             else:
-                print('User has been registered')
+                logging.info("User has been registered")
 
             return await handler(event, data)

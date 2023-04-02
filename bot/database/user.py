@@ -1,6 +1,6 @@
 import datetime
 
-from sqlalchemy import Column, Integer, TEXT, DATE, select, update
+from sqlalchemy import Column, Integer, TEXT, DATE, select, update, func
 from sqlalchemy.orm import sessionmaker
 
 from .base import BaseModel
@@ -119,6 +119,7 @@ async def deleting_subscription(user_id: int, session_maker: sessionmaker) -> No
             )
 
 
+# profile methods
 async def get_requests(user_id: int, session_maker: sessionmaker) -> int:
     async with session_maker() as session:
         async with session.begin():
@@ -140,3 +141,21 @@ async def get_subscription_end_date(user_id: int, session_maker: sessionmaker) -
             date = date.one_or_none()
             date = datetime.datetime.fromtimestamp(date[0]).strftime("%b %d %Y - %H:%M:%S")
             return str(date)
+
+
+# admin panel methods
+async def get_user_number(session_maker: sessionmaker) -> int:
+    async with session_maker() as session:
+        async with session.begin():
+            count = await session.scalar(select(func.count(User.user_id)))
+            return count
+
+
+async def get_user_number_with_subscription(session_maker: sessionmaker) -> int:
+    async with session_maker() as session:
+        async with session.begin():
+            count = await session.scalar(
+                select(func.count(User.user_id))
+                .where(User.subscription == 1)
+            )
+            return count
