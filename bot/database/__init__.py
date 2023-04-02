@@ -9,7 +9,9 @@ __all__ = [
     'add_subscription',
     'check_subscription',
     'checking_subscription_availability',
-    'deleting_subscription'
+    'deleting_subscription',
+    'get_requests',
+    'get_subscription_end_date'
 ]
 
 from .base import BaseModel
@@ -22,5 +24,7 @@ from .user import (
     add_subscription,
     check_subscription,
     checking_subscription_availability,
-    deleting_subscription
+    deleting_subscription,
+    get_requests,
+    get_subscription_end_date
 )

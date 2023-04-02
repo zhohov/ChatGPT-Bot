@@ -57,7 +57,7 @@ async def checking_the_number_of_requests(user_id: int, session_maker: sessionma
                 .where(User.user_id == user_id)
             )
             requests = requests.one_or_none()
-            return False if requests[0] > 10 else True
+            return False if requests[0] > 9 else True
 
 
 async def update_requests(user_id: int, session_maker: sessionmaker) -> None:
@@ -117,3 +117,26 @@ async def deleting_subscription(user_id: int, session_maker: sessionmaker) -> No
                 .where(User.user_id == user_id)
                 .values(subscription_end_date=0, subscription=0, requests=0)
             )
+
+
+async def get_requests(user_id: int, session_maker: sessionmaker) -> int:
+    async with session_maker() as session:
+        async with session.begin():
+            requests = await session.execute(
+                select(User.requests)
+                .where(User.user_id == user_id)
+            )
+            requests = requests.one_or_none()
+            return requests[0]
+
+
+async def get_subscription_end_date(user_id: int, session_maker: sessionmaker) -> str:
+    async with session_maker() as session:
+        async with session.begin():
+            date = await session.execute(
+                select(User.subscription_end_date)
+                .where(User.user_id == user_id)
+            )
+            date = date.one_or_none()
+            date = datetime.datetime.fromtimestamp(date[0]).strftime("%b %d %Y - %H:%M:%S")
+            return str(date)

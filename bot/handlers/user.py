@@ -2,11 +2,13 @@ import os
 
 from aiogram import types, Router, F
 from aiogram.enums import ContentType
-from aiogram.filters import Command
+from aiogram.filters import Command, Text
 from aiogram.types import Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from sqlalchemy.orm import sessionmaker
 
-from bot.database import add_subscription
+from bot.database import add_subscription, check_subscription
+from bot.database.user import get_subscription_end_date, get_requests
 
 router = Router()
 
@@ -55,9 +57,20 @@ async def successful_pay(message: types.Message, session_maker: sessionmaker) ->
         await add_subscription(user_id=message.chat.id, session_maker=session_maker)
 
 
+async def profile_command(message: types.Message, session_maker: sessionmaker) -> None:
+    if await check_subscription(user_id=message.chat.id, session_maker=session_maker):
+        end_date = await get_subscription_end_date(user_id=message.from_user.id, session_maker=session_maker)
+        await message.answer(f'Профиль\n\nid: {message.chat.id}\nПодписка: есть\nОкончаниe подписки: {end_date}')
+    else:
+        requests = await get_requests(user_id=message.from_user.id, session_maker=session_maker)
+        await message.answer(f'Профиль\n\nid: {message.chat.id}\nПодписка: нет\nЗапросы:  {requests}/{10}')
+
+
 def register_user_handlers(router: Router) -> None:
     router.message.register(start_command, Command(commands=['start']), flags={'registration_check': 'registration_check'})
     router.message.register(request_command, Command(commands=['request']), flags={'update_requests': 'update_requests'})
+    router.message.register(profile_command, Command(commands=['profile']))
     router.message.register(buy_command, Command(commands=['buy']))
+    router.callback_query.register(buy_send_invoice, Text('buy'))
     router.pre_checkout_query.register(pre_checkout)
     router.message.register(successful_pay, F.content_type == ContentType.SUCCESSFUL_PAYMENT)
