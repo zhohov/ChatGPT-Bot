@@ -8,7 +8,8 @@ __all__ = [
     'update_requests',
     'add_subscription',
     'check_subscription',
-    'checking_subscription_availability'
+    'checking_subscription_availability',
+    'deleting_subscription'
 ]
 
 from .base import BaseModel
@@ -21,4 +22,5 @@ from .user import (
     add_subscription,
     check_subscription,
     checking_subscription_availability,
+    deleting_subscription
 )

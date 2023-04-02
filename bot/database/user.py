@@ -107,3 +107,13 @@ async def checking_subscription_availability(user_id: int, session_maker: sessio
             )
             subscription_end_date = subscription_end_date.one_or_none()
             return True if subscription_end_date[0] > timestamp_date else False
+
+
+async def deleting_subscription(user_id: int, session_maker: sessionmaker) -> None:
+    async with session_maker() as session:
+        async with session.begin():
+            await session.execute(
+                update(User)
+                .where(User.user_id == user_id)
+                .values(subscription_end_date=0, subscription=0, requests=0)
+            )
