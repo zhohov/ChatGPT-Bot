@@ -66,9 +66,9 @@ async def profile_command(message: types.Message, session_maker: sessionmaker) -
 async def gpt_response(message: types.Message) -> None:
     openai.api_key = os.getenv('opneai_token_api')
     response = openai.ChatCompletion.create(
-        # model="text-davinci-003",
         model="gpt-3.5-turbo",
-        messages=[{'role': 'user', 'content': message.text}]
+        messages=[{'role': 'user', 'content': message.text}],
+        # max_tokens=1000
     )
     await message.answer(response['choices'][0]['message']['content'])
     logging.info(response)
