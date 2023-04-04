@@ -9,6 +9,7 @@ from bot.database import create_async_engine, get_session_maker
 from bot.handlers import register_user_handlers, register_admin_handlers
 from middlewares.registration_check import RegistrationCheck
 from middlewares.checking_availability_of_the_request import RequestsCheck
+from middlewares.admin_check import AdminCheck
 
 
 async def main() -> None:
@@ -20,6 +21,7 @@ async def main() -> None:
     bot = Bot(token=os.getenv('token'))
     dp.message.middleware(RegistrationCheck())
     dp.message.middleware(RequestsCheck())
+    dp.message.middleware(AdminCheck())
 
     register_user_handlers(dp)
     register_admin_handlers(dp)

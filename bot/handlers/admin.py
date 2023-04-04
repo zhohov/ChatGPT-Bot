@@ -16,4 +16,4 @@ async def statistics_command(message: types.Message, session_maker: sessionmaker
 
 
 def register_admin_handlers(router: Router) -> None:
-    router.message.register(statistics_command, Command(commands=['statistics']))
+    router.message.register(statistics_command, Command(commands=['statistics']), flags={'admin_check': 'admin_check'})
