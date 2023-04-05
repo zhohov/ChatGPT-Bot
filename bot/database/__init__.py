@@ -13,7 +13,13 @@ __all__ = [
     'get_requests',
     'get_subscription_end_date',
     'get_user_number',
-    'get_user_number_with_subscription'
+    'get_user_number_with_subscription',
+    'check_user_settings',
+    'set_user_settings',
+    'update_user_api_key',
+    'update_user_max_tokens',
+    'get_user_openai_key',
+    'get_user_max_tokens'
 ]
 
 from .base import BaseModel
@@ -32,3 +38,5 @@ from .user import (
     get_user_number,
     get_user_number_with_subscription
 )
+from .user_api_methods_for_db import check_user_settings, set_user_settings, update_user_api_key, update_user_max_tokens,\
+    get_user_openai_key, get_user_max_tokens

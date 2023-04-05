@@ -13,7 +13,3 @@ async def statistics_command(message: types.Message, session_maker: sessionmaker
     await message.answer(
         f'Статистика по пользователям\n\nКоличество пользователей: {users}'
         f'\nКоличество подписчиков: {users_with_subscription}')
-
-
-def register_admin_handlers(router: Router) -> None:
-    router.message.register(statistics_command, Command(commands=['statistics']), flags={'admin_check': 'admin_check'})

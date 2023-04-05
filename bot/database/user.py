@@ -19,6 +19,12 @@ class User(BaseModel):
     requests = Column(Integer, default=0)
     subscription = Column(Integer, default=0)
     subscription_end_date = Column(Integer, default=0)
+    # user key usage
+    custom_key = Column(Integer, default=0)
+    # user openai api key
+    user_openai_key = Column(TEXT, default=' ')
+    # user openai max_tokens for gpt response
+    user_openai_max_tokens = Column(Integer, default=0)
 
     def __str__(self) -> str:
         return f"<User:{self.user_id}>"
