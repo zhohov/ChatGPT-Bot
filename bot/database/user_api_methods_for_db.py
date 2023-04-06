@@ -65,3 +65,13 @@ async def get_user_max_tokens(user_id: int, session_maker: sessionmaker) -> int:
             )
             max_tokens = max_tokens.one_or_none()
             return max_tokens[0]
+
+
+async def remove_user_settings(user_id: int, session_maker: sessionmaker) -> None:
+    async with session_maker() as session:
+        async with session.begin():
+            await session.execute(
+                update(User)
+                .where(User.user_id == user_id)
+                .values(custom_key=0, user_openai_key='None', user_openai_max_tokens=0)
+            )
