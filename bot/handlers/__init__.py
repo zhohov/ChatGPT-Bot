@@ -3,7 +3,8 @@ __all__ = [
     'register_profile_handlers',
     'register_buy_handlers',
     'register_admin_handlers',
-    'register_response_handlers'
+    'register_response_handlers',
+    'bot_commands'
 ]
 
 from aiogram import F, Router
@@ -17,6 +18,7 @@ from .start import start_command, cancel_command, settings_command, waiting_api_
 from .buy import buy_command, buy_send_invoice, pre_checkout, successful_pay
 from .gptresponse import gpt_response
 from .admin import statistics_command
+from .bot_commands import bot_commands
 
 
 def register_start_handlers(router: Router) -> None:

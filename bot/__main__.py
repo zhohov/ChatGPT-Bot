@@ -2,12 +2,13 @@ import os
 import logging
 import asyncio
 from aiogram import Dispatcher, Bot
+from aiogram.types import BotCommand
 from dotenv import load_dotenv, find_dotenv
 from sqlalchemy import URL
 
 from bot.database import create_async_engine, get_session_maker
 from bot.handlers import register_start_handlers, register_profile_handlers, register_admin_handlers, \
-    register_response_handlers, register_buy_handlers
+    register_response_handlers, register_buy_handlers, bot_commands
 from middlewares.registration_check import RegistrationCheck
 from middlewares.checking_availability_of_the_request import RequestsCheck
 from middlewares.admin_check import AdminCheck
@@ -18,8 +19,14 @@ async def main() -> None:
 
     load_dotenv(find_dotenv())
 
+    commands = []
+    for cmd in bot_commands:
+        commands.append(BotCommand(command=cmd[0], description=cmd[1]))
+
     dp = Dispatcher()
     bot = Bot(token=os.getenv('token'))
+    await bot.set_my_commands(commands=commands)
+
     dp.message.middleware(RegistrationCheck())
     dp.message.middleware(RequestsCheck())
     dp.message.middleware(AdminCheck())
