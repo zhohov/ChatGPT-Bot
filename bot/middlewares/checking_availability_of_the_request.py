@@ -26,11 +26,14 @@ class RequestsCheck(BaseMiddleware):
             return await handler(event, data)
         else:
             await data['bot'].send_message(event.from_user.id, 'Формируем ответ...')
+
+            check_subscription_ = await check_subscription(user_id=event.from_user.id, session_maker=session_maker)
+            checking_subscription_availability_ = await checking_subscription_availability(user_id=event.from_user.id, session_maker=session_maker)
+            check_user_settings_ = await check_user_settings(user_id=event.from_user.id, session_maker=session_maker)
+
             async with ChatActionSender(chat_id=event.chat.id, action='typing', interval=5.0, initial_sleep=0.0):
-                if await check_subscription(user_id=event.from_user.id, session_maker=session_maker) \
-                            or await check_user_settings(user_id=event.from_user.id, session_maker=session_maker):
-                    if await checking_subscription_availability(user_id=event.from_user.id, session_maker=session_maker) \
-                            or await check_user_settings(user_id=event.from_user.id, session_maker=session_maker):
+                if check_subscription_ or check_user_settings_:
+                    if checking_subscription_availability_ or check_user_settings_:
                         return await handler(event, data)
                     else:
                         await deleting_subscription(user_id=event.from_user.id, session_maker=session_maker)

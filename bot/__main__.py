@@ -6,7 +6,8 @@ from dotenv import load_dotenv, find_dotenv
 from sqlalchemy import URL
 
 from bot.database import create_async_engine, get_session_maker
-from bot.handlers import register_user_handlers, register_profile_handlers, register_admin_handlers
+from bot.handlers import register_start_handlers, register_profile_handlers, register_admin_handlers, \
+    register_response_handlers, register_buy_handlers
 from middlewares.registration_check import RegistrationCheck
 from middlewares.checking_availability_of_the_request import RequestsCheck
 from middlewares.admin_check import AdminCheck
@@ -23,9 +24,11 @@ async def main() -> None:
     dp.message.middleware(RequestsCheck())
     dp.message.middleware(AdminCheck())
 
-    register_admin_handlers(dp)
+    register_start_handlers(dp)
     register_profile_handlers(dp)
-    register_user_handlers(dp)
+    register_buy_handlers(dp)
+    register_admin_handlers(dp)
+    register_response_handlers(dp)
 
     postgres_url = URL.create(
          drivername='postgresql+asyncpg',
