@@ -1,0 +1,8 @@
+token = 'токен для телеграм бота'
+opneai_token_api = 'ваш openai ключ'
+db_user = 'имя пользователя'
+db_user_password = 'пароль'
+db_name = 'название базы данных'
+db_port = 'порт'
+payments_provider_token = 'токен для платежной системы'
+admin_id = телеграм айди администратора
