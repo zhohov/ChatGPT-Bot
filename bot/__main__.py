@@ -8,7 +8,7 @@ from sqlalchemy import URL
 
 from bot.database import create_async_engine, get_session_maker
 from bot.handlers import register_start_handlers, register_profile_handlers, register_admin_handlers, \
-    register_response_handlers, register_buy_handlers, bot_commands
+    register_response_handlers, register_feedback_handlers, register_buy_handlers, bot_commands
 from middlewares.registration_check import RegistrationCheck
 from middlewares.checking_availability_of_the_request import RequestsCheck
 from middlewares.admin_check import AdminCheck
@@ -34,6 +34,7 @@ async def main() -> None:
     register_start_handlers(dp)
     register_profile_handlers(dp)
     register_buy_handlers(dp)
+    register_feedback_handlers(dp)
     register_admin_handlers(dp)
     register_response_handlers(dp)
 

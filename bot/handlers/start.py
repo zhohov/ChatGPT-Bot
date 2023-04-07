@@ -39,6 +39,7 @@ async def about_command(message: types.Message) -> types.Message:
                                 'ответов свой токен - введите команду /settings. Если токен уже введен, '
                                 'вы можете изменить его в профиле по команде /profile')
 
+
 async def cancel_command(message: types.Message, state: FSMContext) -> types.Message:
     await state.clear()
     return await message.answer('Действие отменено')

@@ -2,6 +2,7 @@ __all__ = [
     'register_start_handlers',
     'register_profile_handlers',
     'register_buy_handlers',
+    'register_feedback_handlers',
     'register_admin_handlers',
     'register_response_handlers',
     'bot_commands'
@@ -17,7 +18,8 @@ from .start import start_command, cancel_command, settings_command, waiting_api_
     max_tokens_incorrect, about_command
 from .buy import buy_command, buy_send_invoice, pre_checkout, successful_pay
 from .gptresponse import gpt_response
-from .admin import statistics_command
+from .admin import statistics_command, answer_command, set_user_id, set_message, AdminAnswer
+from .feedback import feedback, feedback_message, Feedback
 from .bot_commands import bot_commands
 
 
@@ -50,8 +52,16 @@ def register_profile_handlers(router: Router) -> None:
     router.callback_query.register(remove_token, Text('remove_token'))
 
 
+def register_feedback_handlers(router: Router) -> None:
+    router.message.register(feedback, Command(commands=['feedback']))
+    router.message.register(feedback_message, Feedback.waiting_for_message)
+
+
 def register_admin_handlers(router: Router) -> None:
     router.message.register(statistics_command, Command(commands=['statistics']), flags={'admin_check': 'admin_check'})
+    router.message.register(answer_command, Command(commands=['answer']), flags={'admin_check': 'admin_check'})
+    router.message.register(set_user_id, AdminAnswer.waiting_for_user_id)
+    router.message.register(set_message, AdminAnswer.waiting_for_message)
 
 
 def register_response_handlers(router: Router) -> None:
