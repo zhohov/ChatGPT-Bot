@@ -3,16 +3,16 @@ services:
   db:
     image: postgres:15.2
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: ChatGPTBot
+      POSTGRES_USER:
+      POSTGRES_PASSWORD:
+      POSTGRES_DB:
     env_file:
       - ./.env
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: on-failure
     ports:
-      - "5433:5433"
+      - "5432:5432"
     healthcheck:
       test:
         [
