@@ -1,8 +1,12 @@
-token = 'токен для телеграм бота'
-opneai_token_api = 'ваш openai ключ'
-db_user = 'имя пользователя'
-db_user_password = 'пароль'
-db_name = 'название базы данных'
-db_port = 'порт'
-payments_provider_token = 'токен для платежной системы'
-admin_id = телеграм айди администратора
+token = ''
+opneai_token_api = ''
+admin_id = 475206306
+payments_provider_token = ''
+
+POSTGRES_DB=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_PORT=5432
+POSTGRES_HOST=db
+PG_DATA=/var/lib/pgsql/pgdata
+pgsql='psql -U postgres -nxq - v -ON_ERROR_STOP=on --dbname=chatgptbot'

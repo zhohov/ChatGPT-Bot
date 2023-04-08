@@ -9,9 +9,9 @@ from sqlalchemy import URL
 from bot.database import create_async_engine, get_session_maker
 from bot.handlers import register_start_handlers, register_profile_handlers, register_admin_handlers, \
     register_response_handlers, register_feedback_handlers, register_buy_handlers, bot_commands
-from middlewares.registration_check import RegistrationCheck
-from middlewares.checking_availability_of_the_request import RequestsCheck
-from middlewares.admin_check import AdminCheck
+from bot.middlewares.registration_check import RegistrationCheck
+from bot.middlewares.checking_availability_of_the_request import RequestsCheck
+from bot.middlewares.admin_check import AdminCheck
 
 
 async def main() -> None:
@@ -40,11 +40,11 @@ async def main() -> None:
 
     postgres_url = URL.create(
          drivername='postgresql+asyncpg',
-         username=os.getenv('db_user'),
-         password=os.getenv('db_user_password'),
-         host='localhost',
-         database=os.getenv('db_name'),
-         port=os.getenv('db_port')
+         username=os.getenv('POSTGRES_USER'),
+         password=os.getenv('POSTGRES_PASSWORD'),
+         host=os.getenv('POSTGRES_HOST'),
+         database=os.getenv('POSTGRES_DB'),
+         port=os.getenv('POSTGRES_PORT')
      )
 
     async_engine = create_async_engine(postgres_url)
